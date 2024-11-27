@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: dummy-axon-test
+  profiles:
+    active: local
+  flyway:
+    enabled: false
+    locations: classpath:db/migration
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:dummy_axon_test}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  data:
+    mongodb:
+      host: ${MONGO_HOST:localhost}
+      port: ${MONGO_PORT:27017}
+      database: ${MONGO_DB_NAME:dummy_axon_test}
+  jpa:
+    hibernate:
+      ddl-auto: ${DB_DDL_AUTO:validate}
+    show-sql: ${SHOW_SQL:false}
+    properties:
+      hibernate:
+        format_sql: ${FORMAT_SQL:false}
+
+axon:
+  eventhandling:
+    processors:
+      bike-group:
+        mode: subscribing
+        dlq:
+          enabled: true
+      user-group:
+        mode: subscribing
+        dlq:
+          enabled: true
+      rent-group:
+        mode: subscribing
+        dlq:
+          enabled: true
+
+axoniq:
+  console:
+    application-name: Dummy-test
+    credentials: df55e857-0:a183b4ea9b454f50b011fd53cef097fd
+    dlq-mode: FULL
