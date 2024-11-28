@@ -10,6 +10,8 @@ volumes:
   axonserver-data:
   axonserver-events:
   axonserver-config:
+  rabbitmq_data:
+  rabbitmq_log:
 
 services:
   database:
@@ -53,6 +55,22 @@ services:
       ME_CONFIG_BASICAUTH_PASSWORD: secret
     depends_on:
       - rent-database
+
+  broker:
+    image: rabbitmq:4.0.3-management-alpine
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: secret
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_log:/var/log/rabbitmq
+    networks:
+      - local
 
   axon-server:
     image: axoniq/axonserver:latest

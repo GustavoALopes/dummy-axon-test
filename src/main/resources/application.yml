@@ -2,7 +2,7 @@ spring:
   application:
     name: dummy-axon-test
   profiles:
-    active: local
+    active: amqp
   flyway:
     enabled: false
     locations: classpath:db/migration
