@@ -7,9 +7,9 @@ networks:
 volumes:
   postgres-data:
   mongodb_data:
-  axonserver-data:
-  axonserver-events:
-  axonserver-config:
+#  axonserver-data:
+#  axonserver-events:
+#  axonserver-config:
   rabbitmq_data:
   rabbitmq_log:
 
@@ -72,17 +72,17 @@ services:
     networks:
       - local
 
-  axon-server:
-    image: axoniq/axonserver:latest
-    container_name: axon-server
-    hostname: axon-server
-    restart: always
-    ports:
-      - "8024:8024"
-      - "8124:8124"
-    volumes:
-      - axonserver-data:/axonserver/data
-      - axonserver-events:/axonserver/events
-      - axonserver-config:/axonserver/config
-    networks:
-      - local
+#  axon-server:
+#    image: axoniq/axonserver:latest
+#    container_name: axon-server
+#    hostname: axon-server
+#    restart: always
+#    ports:
+#      - "8024:8024"
+#      - "8124:8124"
+#    volumes:
+#      - axonserver-data:/axonserver/data
+#      - axonserver-events:/axonserver/events
+#      - axonserver-config:/axonserver/config
+#    networks:
+#      - local

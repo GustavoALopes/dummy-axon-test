@@ -39,9 +39,9 @@ axon:
         mode: subscribing
         dlq:
           enabled: true
-
-axoniq:
-  console:
-    application-name: Dummy-test
-    credentials: df55e857-0:a183b4ea9b454f50b011fd53cef097fd
-    dlq-mode: FULL
+#
+#axoniq:
+#  console:
+#    application-name: Dummy-test
+#    credentials: df55e857-0:a183b4ea9b454f50b011fd53cef097fd
+#    dlq-mode: FULL

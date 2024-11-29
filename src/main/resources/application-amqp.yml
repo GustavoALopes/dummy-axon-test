@@ -27,9 +27,17 @@ spring:
     password: secret
 
 axon:
+  axonserver:
+    enabled: false
+  serializer:
+    general: jackson
   amqp:
-    exchange: bike-rent
+    exchange: bike-rent.bike-group-event.exchange
   eventhandling:
       processors:
         bike-group:
             source: bikeQueueMessageSource
+
+logging:
+  level:
+    org.springframework.amqp: DEBUG

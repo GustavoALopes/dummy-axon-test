@@ -27,6 +27,7 @@ public class BikeQueryHandler {
 
     @EventHandler
     public void on(final BikeCreatedEvent event) {
-        bikeRepository.save(BikeModel.from(event));
+        throw new RuntimeException("Test");
+//        bikeRepository.save(BikeModel.from(event));
     }
 }

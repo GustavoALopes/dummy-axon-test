@@ -1,5 +1,5 @@
 -- Create bike table
-CREATE TABLE IF NOT EXISTS bikes (
+CREATE TABLE bikes (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     description TEXT,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS bikes (
 );
 
 -- Create user table
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE users (
     id UUID PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     document VARCHAR(20) NOT NULL,
@@ -19,5 +19,5 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 -- Create unique index on document field
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_document ON users (document);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users (email);
+CREATE UNIQUE INDEX idx_users_document ON users (document);
+CREATE UNIQUE INDEX idx_users_email ON users (email);
