@@ -34,11 +34,16 @@ public class RentBikeUseCase implements IUseCase<Pair<UUID, UUID>, Void> {
 
         final var existsUser = this.queryGateway.query("existsUser", userId, ResponseTypes.instanceOf(Boolean.class));
         final var existsBike = this.queryGateway.query("existsBike", bikeId, ResponseTypes.instanceOf(Boolean.class));
+        final var bikeIsRented = this.queryGateway.query("bikeIsRented", Pair.with(userId, bikeId), ResponseTypes.instanceOf(Boolean.class));
 
-        CompletableFuture.allOf(existsUser, existsBike).join();
+        CompletableFuture.allOf(existsUser, existsBike, bikeIsRented).join();
 
         if(!existsUser.get() || !existsBike.get()) {
             throw new RuntimeException("User or Bike not found");
+        }
+
+        if(bikeIsRented.get()) {
+            throw new RuntimeException("Bike is already rented");
         }
 
         this.commandGateway.send(RentBikeCommand.create(userId, bikeId));

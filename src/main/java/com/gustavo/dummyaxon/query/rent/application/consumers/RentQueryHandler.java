@@ -6,9 +6,11 @@ import com.gustavo.dummyaxon.command.rent.domain.events.ReturnedBikeEvent;
 import com.gustavo.dummyaxon.query.rent.application.dtos.viewmodels.RentViewModel;
 import com.gustavo.dummyaxon.query.rent.infra.data.repositories.IRentRepository;
 import com.gustavo.dummyaxon.query.rent.infra.data.repositories.models.RentModel;
+import jakarta.transaction.Transactional;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
+import org.javatuples.Pair;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -28,12 +30,20 @@ public class RentQueryHandler {
         return this.repository.existsByIdAndStatus(rentId, Rent.Status.RUNNING);
     }
 
+    @QueryHandler(queryName = "bikeIsRented")
+    public boolean bikeIsRented(
+            final Pair<UUID, UUID> params
+    ) {
+        return this.repository.existsByUserIdAndBikeIdAndStatus(params.getValue0(), params.getValue1(), Rent.Status.RUNNING);
+    }
+
     @QueryHandler(queryName = "listAll")
     public Iterable<RentViewModel> listAll() {
         final var rents = this.repository.findAll();
         return rents.stream().map(RentViewModel::from).toList();
     }
 
+    @Transactional
     @EventHandler
     public void on(final RentedBikeEvent event) {
         this.repository.save(RentModel.from(event));

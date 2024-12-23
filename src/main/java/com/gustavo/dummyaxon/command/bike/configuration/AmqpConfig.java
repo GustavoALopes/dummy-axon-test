@@ -1,44 +1,31 @@
 package com.gustavo.dummyaxon.command.bike.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gustavo.dummyaxon.core.message.resolvers.MetadataRoutingKeyResolver;
 import com.rabbitmq.client.Channel;
-import org.axonframework.eventhandling.EventBus;
 import org.axonframework.extensions.amqp.eventhandling.AMQPMessageConverter;
 import org.axonframework.extensions.amqp.eventhandling.DefaultAMQPMessageConverter;
+import org.axonframework.extensions.amqp.eventhandling.RoutingKeyResolver;
 import org.axonframework.extensions.amqp.eventhandling.spring.SpringAMQPMessageSource;
-import org.axonframework.extensions.amqp.eventhandling.spring.SpringAMQPPublisher;
 import org.axonframework.serialization.Serializer;
 import org.axonframework.serialization.json.JacksonSerializer;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
-@Configuration
 @Profile("amqp")
+@Configuration(value = "AMQP.Config.Bike")
 public class AmqpConfig {
 
     @Bean
-    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
-            ConnectionFactory connectionFactory
-    ) {
-        SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
-        factory.setConnectionFactory(connectionFactory);
-        factory.setDefaultRequeueRejected(false);
-        factory.setAcknowledgeMode(AcknowledgeMode.AUTO);
-        return factory;
-    }
-
-    @Bean
     public AMQPMessageConverter eventMessageConverter(
-            final ObjectMapper objectMapper
+            final Serializer serializer,
+            final RoutingKeyResolver resolver
     ) {
-        final Serializer serializer = serializer(objectMapper);
-        return new DefaultAMQPMessageConverter.Builder().serializer(serializer).build();
+        return new DefaultAMQPMessageConverter.Builder().serializer(serializer).routingKeyResolver(resolver).build();
     }
 
     @Bean
@@ -52,26 +39,14 @@ public class AmqpConfig {
     }
 
     @Bean
-    public SpringAMQPPublisher amqpPublisher(
-            final EventBus eventBus,
-            final ConnectionFactory connectionFactory,
-            final Serializer serializer
-    ) {
-        final var publisher = new SpringAMQPPublisher(eventBus);
-        publisher.setConnectionFactory(connectionFactory);
-        publisher.setMessageConverter(
-                DefaultAMQPMessageConverter.builder()
-                        .serializer(serializer)
-                        .build()
-        );
-        publisher.setExchange(bikeExchange()); // Specify your RabbitMQ exchange
-        publisher.start();
-        return publisher;
+    @Primary
+    public RoutingKeyResolver routingKeyResolver() {
+        return new MetadataRoutingKeyResolver();
     }
 
     @Bean
     public Exchange bikeExchange() {
-        return ExchangeBuilder.topicExchange(Exchanges.BIKE_EXCHANGE).build();
+        return ExchangeBuilder.topicExchange(Exchanges.DEFAULT_EXCHANGE).build();
     }
 
 
@@ -87,7 +62,7 @@ public class AmqpConfig {
 
     @Bean
     public Binding binding() {
-        return BindingBuilder.bind(bikeQueue()).to(bikeExchange()).with(RoutingKeys.ALL).noargs();
+        return BindingBuilder.bind(bikeQueue()).to(bikeExchange()).with(RoutingKeys.BIKE).noargs();
     }
 
     @Bean
@@ -131,12 +106,12 @@ public class AmqpConfig {
 
 
     public static final class Exchanges {
-        public static final String BIKE_EXCHANGE = "bike-rent.bike-group-event.exchange";
+        public static final String DEFAULT_EXCHANGE = "bike-rent.exchange";
         public static final String DEAD_EXCHANGE = "bike-rent.dead.exchange";
     }
 
     public static final class RoutingKeys {
-        public static final String ALL = "#";
+        public static final String BIKE = "#.Bike.#";
         public static final String BIKE_DEAD_QUEUE = "Bike";
     }
 }

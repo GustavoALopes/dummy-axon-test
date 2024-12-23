@@ -1,6 +1,7 @@
 package com.gustavo.dummyaxon.command.bike.application.dtos.inputmodel;
 
 import lombok.Getter;
+import org.axonframework.commandhandling.RoutingKey;
 
 import java.io.Serializable;
 

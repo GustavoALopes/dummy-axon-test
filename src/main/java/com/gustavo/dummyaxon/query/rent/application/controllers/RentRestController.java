@@ -22,6 +22,10 @@ public class RentRestController {
 
     @GetMapping
     public ResponseEntity<List<RentViewModel>> listAll() {
-        return ResponseEntity.ok(this.queryGateway.query("listAll", null, ResponseTypes.multipleInstancesOf(RentViewModel.class)).join());
+        return ResponseEntity.ok(this.queryGateway.query(
+                "listAll",
+                null,
+                ResponseTypes.multipleInstancesOf(RentViewModel.class)).join()
+        );
     }
 }

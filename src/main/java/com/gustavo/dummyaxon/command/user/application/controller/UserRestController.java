@@ -16,14 +16,10 @@ public class UserRestController {
 
     private final CommandGateway commandGateway;
 
-    private final QueryBus queryBus;
-
     public UserRestController(
-            final CommandGateway commandGateway,
-            final QueryBus queryBus
+            final CommandGateway commandGateway
     ) {
         this.commandGateway = commandGateway;
-        this.queryBus = queryBus;
     }
 
     @PostMapping

@@ -12,18 +12,22 @@ import org.springframework.context.annotation.Configuration;
 public class AxonConfig {
 
     @Bean
-    public SequencedDeadLetterQueue<EventMessage<?>> amqpDeadLetterQueue(RabbitTemplate rabbitTemplate, Serializer serializer) {
-        return new AmqpSequencedDeadLetterQueue(rabbitTemplate, AmqpConfig.Exchanges.DEAD_EXCHANGE, serializer, 100);
+    public SequencedDeadLetterQueue<EventMessage<?>> amqpDeadLetterQueue(RabbitTemplate rabbitTemplate, final Serializer serializer) {
+        return new AmqpSequencedDeadLetterQueue(rabbitTemplate, AmqpConfig.Exchanges.DEAD_EXCHANGE, serializer);
     }
 
-    @Bean
-    public ConfigurerModule deadLetterQueueConfigurerModule(
-            final SequencedDeadLetterQueue<EventMessage<?>> amqpSequencedDeadLetterQueue
-    ) {
-        // Replace "my-processing-group" for the processing group you want to configure the DLQ on.
-        return configurer -> configurer.eventProcessing().registerDeadLetterQueue(
-                "bike-group",
-                config -> amqpSequencedDeadLetterQueue
-        );
+    @Configuration
+    class DeadLetterQueue {
+
+        @Bean
+        public ConfigurerModule deadLetterQueueConfigurerModule(
+                final SequencedDeadLetterQueue<EventMessage<?>> amqpSequencedDeadLetterQueue
+        ) {
+            // Replace "my-processing-group" for the processing group you want to configure the DLQ on.
+            return configurer -> configurer.eventProcessing().registerDeadLetterQueue(
+                    "bike-group",
+                    config -> amqpSequencedDeadLetterQueue
+            );
+        }
     }
 }

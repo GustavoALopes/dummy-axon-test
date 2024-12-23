@@ -12,4 +12,10 @@ public interface IRentRepository extends MongoRepository<RentModel, UUID> {
             final UUID rentId,
             final Rent.Status status
     );
+
+    boolean existsByUserIdAndBikeIdAndStatus(
+            final UUID userId,
+            final UUID bikeId,
+            final Rent.Status status
+    );
 }
