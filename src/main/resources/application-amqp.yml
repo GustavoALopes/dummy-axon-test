@@ -32,11 +32,15 @@ axon:
   serializer:
     general: jackson
   amqp:
-    exchange: bike-rent.bike-group-event.exchange
+    exchange: bike-rent.exchange
   eventhandling:
       processors:
         bike-group:
             source: bikeQueueMessageSource
+        user-group:
+            source: userQueueMessageSource
+        rent-group:
+            source: rentQueueMessageSource
 
 logging:
   level:

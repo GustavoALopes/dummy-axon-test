@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS snapshot_event_entry (
 CREATE TABLE IF NOT EXISTS token_entry (
     processor_name VARCHAR(255) NOT NULL,        -- Name of the event processor
     segment INT NOT NULL,                        -- Segment ID for the processor
-    token BYTEA,                                 -- Serialized token
+    token bigint,                                 -- Serialized token
     token_type VARCHAR(255),                     -- Token's type
     timestamp VARCHAR(255) NOT NULL,             -- Last updated timestamp
     owner VARCHAR(255),                          -- Owner of the token

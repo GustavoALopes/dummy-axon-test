@@ -24,7 +24,26 @@ spring:
       hibernate:
         format_sql: ${FORMAT_SQL:false}
 
+otel:
+  exporter:
+    jaeger:
+      endpoint: http://localhost:14250
+    otlp:
+      endpoint: http://localhost:4318
+  resource:
+    attributes:
+      service.name: dummy-axon-test
+  traces:
+    exporter: jaeger
+  metrics:
+    exporter: none
+  logs:
+    exporter: none
+
 axon:
+  extension:
+    tracing:
+      enabled: false
   eventhandling:
     processors:
       bike-group:
@@ -39,6 +58,19 @@ axon:
         mode: subscribing
         dlq:
           enabled: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus,health,info"
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
 #
 #axoniq:
 #  console:

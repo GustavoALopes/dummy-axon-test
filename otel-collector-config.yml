@@ -1,0 +1,25 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+exporters:
+  debug:
+    verbosity: detailed # Prints detailed logs and traces for debugging
+  otlp:
+    endpoint: jaeger:14250 # Send traces and logs to Jaeger via gRPC
+
+processors:
+  batch:
+
+service:
+  pipelines:
+#    traces:
+#      receivers: [otlp]
+#      processors: [batch]
+#      exporters: [otlp, debug] # Export traces to Jaeger and debug console
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug] # Export logs to debug console
